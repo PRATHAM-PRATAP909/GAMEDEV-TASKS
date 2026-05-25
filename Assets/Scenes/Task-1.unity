@@ -156,8 +156,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   jumpForce: 12
+  coyoteTime: 0.2
+  jumpBufferTime: 0.2
   groundCheck: {fileID: 1728359223}
-  groundCheckRadius: 0.01
+  groundCheckRadius: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -532,7 +534,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1728359223}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}

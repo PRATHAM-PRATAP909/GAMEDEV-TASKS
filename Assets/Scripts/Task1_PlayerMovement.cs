@@ -2,16 +2,28 @@ using UnityEngine;
 
 public class Task1_PlayerMovement : MonoBehaviour
 {
+    [Header("Movement")]
     public float moveSpeed = 5f;
-    public float jumpForce = 12f;
 
+    [Header("Jump")]
+    public float jumpForce = 12f;
+    public float coyoteTime = 0.2f;
+    public float jumpBufferTime = 0.2f;
+
+    [Header("Ground Check")]
     public Transform groundCheck;
-    public float groundCheckRadius = 0.15f;
+    public float groundCheckRadius = 0.1f;
     public LayerMask groundLayer;
 
     private Rigidbody2D rb;
+
     private float moveInput;
     private bool isGrounded;
+
+    private float coyoteTimeCounter;
+    private float jumpBufferCounter;
+
+    private bool hasJumped;
 
     void Start()
     {
@@ -22,18 +34,42 @@ public class Task1_PlayerMovement : MonoBehaviour
     {
         moveInput = Input.GetAxisRaw("Horizontal");
 
-        // Ground check
+ 
         isGrounded = Physics2D.OverlapCircle(
             groundCheck.position,
             groundCheckRadius,
             groundLayer
         );
 
-        // Jump ONLY when grounded
-        if (Input.GetButtonDown("Jump") && isGrounded)
+ 
+        if (isGrounded && rb.velocity.y <= 0.01f)
         {
-            rb.velocity = new Vector2(rb.velocity.x, 0f);
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            coyoteTimeCounter = coyoteTime;
+            hasJumped = false;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpBufferCounter = jumpBufferTime;
+        }
+        else
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
+
+
+        if (jumpBufferCounter > 0 && coyoteTimeCounter > 0 && !hasJumped)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+
+            hasJumped = true;
+            jumpBufferCounter = 0f;
+            coyoteTimeCounter = 0f;
         }
     }
 
